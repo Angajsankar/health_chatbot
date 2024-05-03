@@ -1,0 +1,36 @@
+import sqlite3
+
+# Connect to the database (creates a new database if it doesn't exist)
+conn = sqlite3.connect('patients.db')
+
+# Create a cursor object to execute SQL queries
+cursor = conn.cursor()
+
+# Create Patients table
+cursor.execute('''CREATE TABLE Patients (
+                    patient_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT,
+                    age INTEGER,
+                    gender CHAR(1)
+                )''')
+
+# Create Appointments table
+cursor.execute('''CREATE TABLE Appointments (
+                    appointment_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    patient_id INTEGER,
+                    appointment_datetime DATETIME,
+                    reminder INTEGER,
+                    FOREIGN KEY (patient_id) REFERENCES Patients(patient_id)
+                )''')
+
+# Inserting a patient
+cursor.execute("INSERT INTO Patients (name, age, gender) VALUES (?, ?, ?)", ('John Doe', 30, 'M'))
+
+# Inserting an appointment for the patient
+cursor.execute("INSERT INTO Appointments (patient_id, appointment_datetime, reminder) VALUES (?, ?, ?)", (1, '2024-05-03 10:30:00', 1))
+
+# Commit the changes
+conn.commit()
+
+# Close the connection
+conn.close()
